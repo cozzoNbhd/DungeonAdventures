@@ -11,8 +11,6 @@ public class Client {
 
     public static void main(String[] args) throws UnknownHostException {
 
-        // String hostname = args.length > 0 ? args[0] : "time.nist.gov";
-
         InetAddress host = InetAddress.getLocalHost();
 
         Socket socket = null;
@@ -103,29 +101,9 @@ public class Client {
 
             }
 
+            String msgFinale = in.readUTF();
+            System.out.println(msgFinale);
 
-
-
-
-            /*
-            d.writeUTF(s);
-            d.writeInt(data[0]);
-            d.flush();
-            d.writeInt(data[1]);
-            d.flush();
-
-            -----
-
-            InputStream in = socket.getInputStream();
-
-            StringBuilder time = new StringBuilder();
-            InputStreamReader reader = new InputStreamReader(in, "ASCII");
-
-            for (int c = reader.read(); c != -1; c = reader.read())
-                time.append((char) c);
-            */
-
-            // --------------------
         } catch (IOException ex) {
             System.out.println("could not connect to time.nist.gov");
         } finally {

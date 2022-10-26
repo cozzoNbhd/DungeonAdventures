@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Dungeon_Adventures {
+    public final static int PORT = 13;
 
     public static class Giocatore {
         private int lvlSalute;
@@ -70,8 +71,6 @@ public class Dungeon_Adventures {
         }
     }
 
-
-
     public static class GestioneClient implements Runnable {
         private Socket connection;
         public GestioneClient(Socket connection) {
@@ -129,7 +128,7 @@ public class Dungeon_Adventures {
                             }
                             if (ris == 1) {
                                 numero_mostri++;
-                                out.writeUTF("Congratulazioni! Hai vinto il duello! Hai ucciso " + numero_mostri + " mostri!");
+                                out.writeUTF("Congratulazioni! Hai vinto il duello!");
                                 out.flush();
                                 break;
                             }
@@ -180,7 +179,6 @@ public class Dungeon_Adventures {
                         val = in.readInt();
 
                         if (val == 0) {
-
                             out.writeInt(-1);
                             out.flush();
                             break;
@@ -193,6 +191,8 @@ public class Dungeon_Adventures {
 
                 }
 
+                out.writeUTF("Numero di mostri uccisi: " + numero_mostri);
+
                 System.out.println("Connessione con " + this.connection.toString() + " terminata");
                 this.connection.close();
 
@@ -202,12 +202,10 @@ public class Dungeon_Adventures {
         }
     }
 
-    public final static int PORT = 13;
-
     public static void main(String[] args) {
-
         try (ServerSocket listener = new ServerSocket(PORT)) {
             ExecutorService pool = Executors.newCachedThreadPool();
+            System.out.println("In attesa di nuovi giocatori...");
             while (true) {
                 pool.execute(new GestioneClient(listener.accept()));
             }
