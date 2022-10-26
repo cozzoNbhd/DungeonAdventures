@@ -69,12 +69,36 @@ public class Client {
 
                     n = in.readInt();
                     if (n == -1) break;
-                    else continue;
+                    else if (n == 1) {
+                        msg1 = in.readUTF();
+                        System.out.println(msg1);
+
+                        done = false;
+                        n = -1;
+
+                        while (!done) {
+                            try {
+                                n = sc.nextInt();
+                                if (n == 0 || n == 1) done = true;
+                            }
+                            catch (InputMismatchException e) {
+                                System.out.println("Il valore inserito NON è valido!");
+                                sc.nextLine();
+                            }
+                        }
+
+                        out.writeInt(n);
+
+                        n = in.readInt();
+                        break;
+
+
+                    } else continue;
 
                 }
 
-                break;
-
+                if (n == -1) break;
+                else if (n == 200) continue;
 
 
             }

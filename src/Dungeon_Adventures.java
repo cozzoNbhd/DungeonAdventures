@@ -88,17 +88,19 @@ public class Dungeon_Adventures {
                 DataInputStream in = new DataInputStream(this.connection.getInputStream());
 
                 Giocatore g = new Giocatore();
-                Mostro m = new Mostro();
                 int val = -1;
                 boolean done = false;
+                int numero_mostri = 0;
+                boolean perso = false;
 
                 out.writeUTF("Il tuo livello di salute e' di " + g.lvlSalute + " e la tua quantita' di pozione e' di " + g.qtPozione);
-
                 out.flush();
 
                 int ris, i = 0;
 
                 while (true) {
+
+                    Mostro m = new Mostro();
 
                     out.writeUTF("Combatterai con un mostro con livello di salute " + m.lvlSalute);
                     out.flush();
@@ -116,6 +118,8 @@ public class Dungeon_Adventures {
 
                         val = in.readInt();
 
+                        System.out.println("IL client ha risposto con il valore " + val);
+
                         if (val == 1) {
                             ris = g.combattiMostro(m);
                             if (ris == 0) {
@@ -124,13 +128,15 @@ public class Dungeon_Adventures {
                                 break;
                             }
                             if (ris == 1) {
-                                out.writeUTF("Congratulazioni! Hai vinto il duello!");
+                                numero_mostri++;
+                                out.writeUTF("Congratulazioni! Hai vinto il duello! Hai ucciso " + numero_mostri + " mostri!");
                                 out.flush();
                                 break;
                             }
                             if (ris == 2) {
-                                out.writeUTF("Mi dispiace, il mostro ti ha battuto!");
+                                out.writeUTF("Mi dispiace, il mostro ti ha battuto, non sei degno di rigiocare!");
                                 out.flush();
+                                perso = true;
                                 break;
                             }
                             out.writeUTF("Dopo il combattimento il tuo livello di salute e' di " + g.getLvlSalute() +
@@ -155,16 +161,34 @@ public class Dungeon_Adventures {
                             break;
                         }
 
-                        System.out.println("IL client ha risposto con il valore " + val);
                         out.writeInt(200);
+                        out.flush();
+
                     }
 
+                    if (perso == true) {
+                        out.writeInt(-1);
+                        out.flush();
+                        break;
+                    } else {
+                        out.writeInt(1);
+                        out.flush();
 
-                    out.writeInt(-1);
-                    out.flush();
+                        out.writeUTF("Premi '1' per giocare ancora, '0' altrimenti.");
+                        out.flush();
 
+                        val = in.readInt();
 
-                    break;
+                        if (val == 0) {
+
+                            out.writeInt(-1);
+                            out.flush();
+                            break;
+                        } else if (val == 1) {
+                            out.writeInt(200);
+                            out.flush();
+                        }
+                    }
 
 
                 }
